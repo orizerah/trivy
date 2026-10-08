@@ -570,18 +570,32 @@ func TestDriver_Detect(t *testing.T) {
 			},
 			libType: ftypes.Jar,
 			args: args{
-				pkgName: "org.apache.commons:commons-lang3",
-				pkgVer:  "3.14.0+echo.1",
+				pkgName: "com.fasterxml.jackson.core:jackson-databind",
+				pkgVer:  "2.20.1+echo.1",
 			},
 			want: []types.DetectedVulnerability{
 				{
-					VulnerabilityID: "CVE-2024-88888",
+					VulnerabilityID: "CVE-2026-54513",
 					VendorIDs: []string{
-						"ECHO-mvn1-0000-0001",
+						"ECHO-5950-3ca7-8a02",
 					},
-					PkgName:          "org.apache.commons:commons-lang3",
-					InstalledVersion: "3.14.0+echo.1",
-					FixedVersion:     "3.14.0+echo.999",
+					PkgName:          "com.fasterxml.jackson.core:jackson-databind",
+					InstalledVersion: "2.20.1+echo.1",
+					FixedVersion:     "2.20.2+echo.1",
+					DataSource: &dbTypes.DataSource{
+						ID:   "echo-osv",
+						Name: "Echo OSV",
+						URL:  "https://advisory.echohq.com/osv/all.zip",
+					},
+				},
+				{
+					VulnerabilityID: "CVE-2026-54517",
+					VendorIDs: []string{
+						"ECHO-6681-8823-c8a0",
+					},
+					PkgName:          "com.fasterxml.jackson.core:jackson-databind",
+					InstalledVersion: "2.20.1+echo.1",
+					FixedVersion:     "2.21.4",
 					DataSource: &dbTypes.DataSource{
 						ID:   "echo-osv",
 						Name: "Echo OSV",
@@ -589,6 +603,60 @@ func TestDriver_Detect(t *testing.T) {
 					},
 				},
 			},
+		},
+		{
+			name: "echo maven package with the echo fixed version",
+			fixtures: []string{
+				"testdata/fixtures/echo.yaml",
+				"testdata/fixtures/data-source.yaml",
+			},
+			libType: ftypes.Jar,
+			args: args{
+				pkgName: "com.fasterxml.jackson.core:jackson-databind",
+				pkgVer:  "2.20.2+echo.1",
+			},
+			want: []types.DetectedVulnerability{
+				{
+					VulnerabilityID: "CVE-2026-54517",
+					VendorIDs: []string{
+						"ECHO-6681-8823-c8a0",
+					},
+					PkgName:          "com.fasterxml.jackson.core:jackson-databind",
+					InstalledVersion: "2.20.2+echo.1",
+					FixedVersion:     "2.21.4",
+					DataSource: &dbTypes.DataSource{
+						ID:   "echo-osv",
+						Name: "Echo OSV",
+						URL:  "https://advisory.echohq.com/osv/all.zip",
+					},
+				},
+			},
+		},
+		{
+			name: "echo maven package with the upstream fixed version",
+			fixtures: []string{
+				"testdata/fixtures/echo.yaml",
+				"testdata/fixtures/data-source.yaml",
+			},
+			libType: ftypes.Jar,
+			args: args{
+				pkgName: "com.fasterxml.jackson.core:jackson-databind",
+				pkgVer:  "2.21.4+echo.1",
+			},
+			want: nil,
+		},
+		{
+			name: "maven package without echo suffix",
+			fixtures: []string{
+				"testdata/fixtures/echo.yaml",
+				"testdata/fixtures/data-source.yaml",
+			},
+			libType: ftypes.Jar,
+			args: args{
+				pkgName: "com.fasterxml.jackson.core:jackson-databind",
+				pkgVer:  "2.20.2",
+			},
+			want: nil,
 		},
 		{
 			name: "echo npm package",
@@ -598,18 +666,32 @@ func TestDriver_Detect(t *testing.T) {
 			},
 			libType: ftypes.NodePkg,
 			args: args{
-				pkgName: "@babel/traverse",
-				pkgVer:  "7.23.2+echo.1",
+				pkgName: "nanoid",
+				pkgVer:  "3.3.6+echo.1",
 			},
 			want: []types.DetectedVulnerability{
 				{
-					VulnerabilityID: "CVE-2024-66666",
+					VulnerabilityID: "CVE-2026-67213",
 					VendorIDs: []string{
-						"ECHO-npm1-0000-0001",
+						"ECHO-4872-5a8d-5e5f",
 					},
-					PkgName:          "@babel/traverse",
-					InstalledVersion: "7.23.2+echo.1",
-					FixedVersion:     "7.23.2+echo.999",
+					PkgName:          "nanoid",
+					InstalledVersion: "3.3.6+echo.1",
+					FixedVersion:     "3.3.18",
+					DataSource: &dbTypes.DataSource{
+						ID:   "echo-osv",
+						Name: "Echo OSV",
+						URL:  "https://advisory.echohq.com/osv/all.zip",
+					},
+				},
+				{
+					VulnerabilityID: "CVE-2026-73086",
+					VendorIDs: []string{
+						"ECHO-bc75-657e-24f9",
+					},
+					PkgName:          "nanoid",
+					InstalledVersion: "3.3.6+echo.1",
+					FixedVersion:     "3.3.6+echo.2",
 					DataSource: &dbTypes.DataSource{
 						ID:   "echo-osv",
 						Name: "Echo OSV",
@@ -619,15 +701,43 @@ func TestDriver_Detect(t *testing.T) {
 			},
 		},
 		{
-			name: "echo npm package at the fixed echo build",
+			name: "echo npm package with a newer echo revision than the fixed one",
 			fixtures: []string{
 				"testdata/fixtures/echo.yaml",
 				"testdata/fixtures/data-source.yaml",
 			},
 			libType: ftypes.NodePkg,
 			args: args{
-				pkgName: "@babel/traverse",
-				pkgVer:  "7.23.2+echo.999",
+				pkgName: "nanoid",
+				pkgVer:  "3.3.6+echo.10",
+			},
+			want: []types.DetectedVulnerability{
+				{
+					VulnerabilityID: "CVE-2026-67213",
+					VendorIDs: []string{
+						"ECHO-4872-5a8d-5e5f",
+					},
+					PkgName:          "nanoid",
+					InstalledVersion: "3.3.6+echo.10",
+					FixedVersion:     "3.3.18",
+					DataSource: &dbTypes.DataSource{
+						ID:   "echo-osv",
+						Name: "Echo OSV",
+						URL:  "https://advisory.echohq.com/osv/all.zip",
+					},
+				},
+			},
+		},
+		{
+			name: "echo npm package with the upstream fixed version",
+			fixtures: []string{
+				"testdata/fixtures/echo.yaml",
+				"testdata/fixtures/data-source.yaml",
+			},
+			libType: ftypes.NodePkg,
+			args: args{
+				pkgName: "nanoid",
+				pkgVer:  "3.3.18+echo.1",
 			},
 			want: nil,
 		},
@@ -649,7 +759,7 @@ func TestDriver_Detect(t *testing.T) {
 
 			// Compare
 			require.NoError(t, err)
-			assert.Equal(t, tt.want, got)
+			assert.ElementsMatch(t, tt.want, got)
 		})
 	}
 }

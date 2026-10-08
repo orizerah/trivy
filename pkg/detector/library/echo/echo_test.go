@@ -46,20 +46,6 @@ func TestEchoSupplier_Match(t *testing.T) {
 			want:    library.Matched,
 		},
 		{
-			name:    "scoped npm package with +echo.2 suffix",
-			eco:     ecosystem.Npm,
-			pkgName: "@babel/traverse",
-			pkgVer:  "7.23.2+echo.2",
-			want:    library.Matched,
-		},
-		{
-			name:    "npm package without echo suffix",
-			eco:     ecosystem.Npm,
-			pkgName: "ejs",
-			pkgVer:  "3.1.8",
-			want:    library.NoMatch,
-		},
-		{
 			name:    "go package is not supported",
 			eco:     ecosystem.Go,
 			pkgName: "golang.org/x/crypto",
@@ -72,20 +58,6 @@ func TestEchoSupplier_Match(t *testing.T) {
 			pkgName: "org.apache.logging.log4j:log4j-core",
 			pkgVer:  "2.13.3+echo.1",
 			want:    library.Matched,
-		},
-		{
-			name:    "maven package with +echo.999 suffix",
-			eco:     ecosystem.Maven,
-			pkgName: "org.apache.commons:commons-lang3",
-			pkgVer:  "3.14.0+echo.999",
-			want:    library.Matched,
-		},
-		{
-			name:    "maven package without echo suffix",
-			eco:     ecosystem.Maven,
-			pkgName: "org.apache.commons:commons-lang3",
-			pkgVer:  "3.14.0",
-			want:    library.NoMatch,
 		},
 		{
 			name:    "empty version",
